@@ -31,6 +31,8 @@
     - @melpon
 - [FIX] Raspberry Pi + H.264 + サイマルキャスト + --hw-mjpeg-decoder true で動かないのを修正 (#236)
     - @melpon
+- [ADD] パッケージ名 `ubuntu-20.04_armv8_jetson_orin` を追加
+    - @tnoho
 
 ## 2022.1.0
 
