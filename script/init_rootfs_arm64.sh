@@ -10,6 +10,7 @@ CONFIG_FILE=$2
 
 set -ex
 
+export DEBIAN_FRONTEND=noninteractive
 multistrap --no-auth -a arm64 -d $TARGET_DIR -f $CONFIG_FILE
 find $TARGET_DIR/usr/lib/aarch64-linux-gnu -lname '/*' -printf '%p %l\n' | while read link target; do ln -snfv "../../..${target}" "${link}"; done
 find $TARGET_DIR/usr/lib/aarch64-linux-gnu/pkgconfig -printf "%f\n" | while read target; do ln -snfv "../../lib/aarch64-linux-gnu/pkgconfig/${target}" $TARGET_DIR/usr/share/pkgconfig/${target}; done
