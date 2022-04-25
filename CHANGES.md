@@ -11,20 +11,20 @@
 
 ## develop
 
-- [UPDATE] `libwebrtc` を `M100.4896@{#1}` に上げる
-    - @tnoho
-- [FIX] libwebrtc m100 で make_ref_counted を使って scoped_refptr を作るようになったので修正
-    - @tnoho
-- [FIX] SDL のビルドが mac では declaration-after-statement に触れてビルドが通らないのでパッチで回避
-    - @tnoho
+## 2022.2.0
+
+- [UPDATE] CLI11 を 2.2.0 に上げる
+    - @voluntas
+- [UPDATE] Boost 1.79.0 に上げる
+    - @voluntas
+- [UPDATE] `libwebrtc` を `M102.5005@{#1}` に上げる
+    - @tnoho @voluntas
 - [ADD] `--client-cert` と `--client-key` でクライアント認証をできるようにする
     - @melpon
 - [ADD] Windows と Ubuntu で NVIDIA VIDEO CODEC SDK を使ったハードウェアデコーダに対応
     - @melpon
-- [ADD] Windows と Ubuntu 20.04 で Intel Media SDK に対応
+- [ADD] Windows x86_64 と Ubuntu 20.04 x86_64 で Intel Media SDK に対応
     - @melpon
-- [UPDATE] CLI11 を 2.2.0 に上げる
-    - @voluntas
 - [FIX] Ubuntu 20.04 + H.264 + サイマルキャスト + --hw-mjpeg-decoder true で落ちるのを修正 (#221)
     - @melpon
 - [FIX] Raspberry Pi + H.264 + --hw-mjpeg-decoder true で、カメラの種類によっては動かないことがあるのを修正 (#141)
@@ -32,6 +32,10 @@
 - [FIX] Raspberry Pi + H.264 + サイマルキャスト + --hw-mjpeg-decoder true で動かないのを修正 (#236)
     - @melpon
 - [ADD] パッケージ名 `ubuntu-20.04_armv8_jetson_orin` を追加
+    - @tnoho
+- [FIX] libwebrtc m100 で make_ref_counted を使って scoped_refptr を作るようになったので修正
+    - @tnoho
+- [FIX] SDL のビルドが mac では declaration-after-statement に触れてビルドが通らないのでパッチで回避
     - @tnoho
 
 ## 2022.1.0

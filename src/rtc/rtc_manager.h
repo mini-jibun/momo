@@ -15,10 +15,6 @@
 #include "video_codec_info.h"
 #include "video_track_receiver.h"
 
-#if USE_MSDK_ENCODER
-#include "hwenc_msdk/msdk_session.h"
-#endif
-
 struct RTCManagerConfig {
   bool insecure = false;
 
@@ -34,7 +30,6 @@ struct RTCManagerConfig {
   bool disable_auto_gain_control = false;
   bool disable_noise_suppression = false;
   bool disable_highpass_filter = false;
-  bool disable_typing_detection = false;
   bool disable_residual_echo_detector = false;
 
   VideoCodecInfo::Type vp8_encoder = VideoCodecInfo::Type::Default;
@@ -59,9 +54,6 @@ struct RTCManagerConfig {
 
 #if USE_NVCODEC_ENCODER
   std::shared_ptr<CudaContext> cuda_context;
-#endif
-#if USE_MSDK_ENCODER
-  std::shared_ptr<MsdkSession> msdk_session;
 #endif
 };
 

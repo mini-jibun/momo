@@ -94,14 +94,6 @@ int main(int argc, char* argv[]) {
   }
 #endif
 
-#if USE_MSDK_ENCODER
-  std::shared_ptr<MsdkSession> msdk_session;
-  try {
-    msdk_session = MsdkSession::Create();
-  } catch (...) {
-  }
-#endif
-
 #if USE_NVCODEC_ENCODER
   // NvCodec が有効な環境で HW MJPEG デコーダを使う場合、CUDA が有効である必要がある
   if (args.hw_mjpeg_decoder && cuda_context == nullptr) {
@@ -196,7 +188,6 @@ int main(int argc, char* argv[]) {
   rtcm_config.disable_auto_gain_control = args.disable_auto_gain_control;
   rtcm_config.disable_noise_suppression = args.disable_noise_suppression;
   rtcm_config.disable_highpass_filter = args.disable_highpass_filter;
-  rtcm_config.disable_typing_detection = args.disable_typing_detection;
   rtcm_config.disable_residual_echo_detector =
       args.disable_residual_echo_detector;
 
@@ -213,10 +204,6 @@ int main(int argc, char* argv[]) {
 
 #if USE_NVCODEC_ENCODER
   rtcm_config.cuda_context = cuda_context;
-#endif
-
-#if USE_MSDK_ENCODER
-  rtcm_config.msdk_session = msdk_session;
 #endif
 
 #if USE_SDL2
