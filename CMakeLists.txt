@@ -759,8 +759,6 @@ elseif (TARGET_OS STREQUAL "linux")
             nvddk_vic
             nvddk_2d_v2
             nvjpeg
-            nvrm
-            nvrm_graphics
             nvos
         )
       endif(USE_JETSON_ENCODER)
