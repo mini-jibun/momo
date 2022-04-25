@@ -760,6 +760,7 @@ elseif (TARGET_OS STREQUAL "linux")
             nvddk_2d_v2
             nvjpeg
             nvos
+            nvbufsurface
         )
       endif(USE_JETSON_ENCODER)
     else()
