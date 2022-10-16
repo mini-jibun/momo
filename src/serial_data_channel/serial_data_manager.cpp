@@ -98,6 +98,7 @@ bool SerialDataManager::Connect(std::string device, unsigned int rate) {
 
 void SerialDataManager::Send(const uint8_t* data, size_t length) {
   std::vector<uint8_t> v(data, data + length);
+  RTC_LOG(LS_INFO) << std::string(v.begin(), v.end()).c_str();
   post_(std::bind(&SerialDataManager::StartWrite, this, std::move(v)));
 }
 
@@ -144,6 +145,8 @@ void SerialDataManager::SendLineFromSerial() {
     size_t delimiter_index =
         std::distance(read_line_buffer_.begin(), delimiter_iterator);
     for (SerialDataChannel* serial_data_channel : serial_data_channels_) {
+      RTC_LOG(LS_INFO)
+          << std::string(read_line_buffer_.begin(), delimiter_iterator).c_str();
       serial_data_channel->Send(read_line_buffer_.data(), delimiter_index);
     }
     read_line_buffer_.erase(read_line_buffer_.begin(), delimiter_iterator + 1);
