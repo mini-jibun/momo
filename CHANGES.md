@@ -11,6 +11,13 @@
 
 ## develop
 
+## 2022.4.1
+
+- [FIX] CI で Windows の場合 $GITHUB_OUTPUT に "\r" が混入するのを除去する
+    - @miosakuma
+
+## 2022.4.0
+
 - [CHANGE] `ubuntu-18.04_x86_64` のビルドを削除
     - @miosakuma
 - [CHANGE] `--multistream` オプションを削除して値を true 固定にする
@@ -19,8 +26,11 @@
     - @melpon
 - [UPDATE] SDL を 2.24.1 に上げる
     - @melpon
-- [UPDATE] libwebrtc を `M105.5195@{#0}` に上げる
+- [UPDATE] cmake を 3.24.2 に上げる
+    - @voluntas
+- [UPDATE] libwebrtc を `M107.5304@{#4}` に上げる
     - @miosakuma
+    - @melpon
 - [FIX] `--data-channel-signaling`, `--ignore-disconnect-websocket` に 'none' を指定するとエラーになる問題を修正
     - @miosakuma
 - [FIX] ayame モードの `--channel-id` オプションを `--room-id` に修正
