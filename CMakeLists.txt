@@ -18,6 +18,7 @@ set(USE_H264 OFF CACHE BOOL "H264 を利用するかどうか")
 set(USE_SDL2 OFF CACHE BOOL "SDL2 による画面出力を利用するかどうか")
 set(USE_LINUX_PULSE_AUDIO OFF CACHE BOOL "Linux で ALSA の代わりに PulseAudio を利用するか")
 set(USE_SCREEN_CAPTURER OFF CACHE BOOL "スクリーンキャプチャラを利用するかどうか")
+set(USE_SERVO OFF CACHE BOOL "パン・チルト(GPIO12, GPIO13) サーボモーター用PWM出力付きビルドを行うかどうか")
 set(BOOST_ROOT_DIR "" CACHE PATH "Boost のインストール先ディレクトリ\n空文字だった場合はデフォルト検索パスの Boost を利用する")
 set(SDL2_ROOT_DIR "" CACHE PATH "SDL2 のインストール先ディレクトリ\n空文字だった場合はデフォルト検索パスの SDL2 を利用する")
 set(CLI11_ROOT_DIR "" CACHE PATH "CLI11 のインストール先ディレクトリ")
@@ -124,6 +125,23 @@ elseif(MOMO_PACKAGE_NAME STREQUAL "raspberry-pi-os_armv8")
   set(CLANG_ROOT /root/llvm/clang)
   set(SYSROOT /root/rootfs)
 
+  set(USE_LIBCXX ON)
+  set(LIBCXX_INCLUDE_DIR /root/llvm/libcxx/include)
+
+elseif(MOMO_PACKAGE_NAME STREQUAL "raspberry-pi-os_armv8_servo")
+
+  set(TARGET_OS "linux")
+  set(TARGET_OS_LINUX "raspberry-pi-os")
+  set(TARGET_ARCH "arm")
+  set(TARGET_ARCH_ARM "armv8")
+  set(BOOST_ROOT_DIR /root/boost)
+  set(CLI11_ROOT_DIR /root/CLI11)
+  set(WEBRTC_INCLUDE_DIR /root/webrtc/include)
+  set(WEBRTC_LIBRARY_DIR /root/webrtc/lib)
+  set(CLANG_ROOT /root/llvm/clang)
+  set(SYSROOT /root/rootfs)
+
+  set(USE_SERVO ON)
   set(USE_LIBCXX ON)
   set(LIBCXX_INCLUDE_DIR /root/llvm/libcxx/include)
 
@@ -503,7 +521,7 @@ if ("${TARGET_OS}" STREQUAL "windows")
     target_include_directories(momo PRIVATE ${CUDA_INCLUDE_DIRS})
     target_link_libraries(momo
       PRIVATE
-        ${CUDA_TOOLKIT_ROOT_DIR}/lib/x64/cudart_static.lib 
+        ${CUDA_TOOLKIT_ROOT_DIR}/lib/x64/cudart_static.lib
         #${CUDA_LIBRARIES}
     )
   endif()
@@ -519,7 +537,7 @@ if ("${TARGET_OS}" STREQUAL "windows")
     target_include_directories(momo PRIVATE ${_INSTALL_DIR}/msdk/include)
     target_link_libraries(momo
       PRIVATE
-        ${_INSTALL_DIR}/msdk/lib/libmfx.lib 
+        ${_INSTALL_DIR}/msdk/lib/libmfx.lib
     )
   endif()
 elseif (TARGET_OS STREQUAL "macos")
@@ -647,6 +665,12 @@ elseif (TARGET_OS STREQUAL "linux")
     if (USE_LIBCXX)
       target_include_directories(momo PRIVATE ${SYSROOT}/usr/include/${ARCH_NAME})
       target_link_directories(momo PRIVATE ${SYSROOT}/usr/lib/${ARCH_NAME})
+    endif()
+
+    if (USE_SERVO)
+      target_link_libraries(momo
+        PRIVATE
+          pigpiod_if2)
     endif()
 
     if (TARGET_ARCH_ARM STREQUAL "armv8")

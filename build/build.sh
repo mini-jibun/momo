@@ -12,6 +12,7 @@ _PACKAGES=" \
   raspberry-pi-os_armv6 \
   raspberry-pi-os_armv7 \
   raspberry-pi-os_armv8 \
+  raspberry-pi-os_armv8_servo \
   ubuntu-18.04_armv8_jetson_nano \
   ubuntu-18.04_armv8_jetson_xavier \
   ubuntu-20.04_x86_64 \
@@ -163,7 +164,12 @@ case "$PACKAGE" in
       if [ -n "$IMAGES" ]; then
         docker image rm $IMAGES
       fi
-      docker builder prune -f --filter=label=jp.shiguredo.momo=$PACKAGE
+
+      if [ $PACKAGE = "raspberry-pi-os_armv8_servo" ]; then
+        docker builder prune -f --filter=label=net.marukunaru.webrtc=$PACKAGE
+      else
+        docker builder prune -f --filter=label=jp.shiguredo.momo=$PACKAGE
+      fi
       exit 0
     fi
 
