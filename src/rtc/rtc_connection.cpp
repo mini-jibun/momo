@@ -127,7 +127,19 @@ void RTCConnection::CreateOffer(OnCreateSuccessFunc on_success,
                         << result.error().message();
     }
     data_manager->OnDataChannel(result.MoveValue());
+#if USE_SERVO
+    webrtc::DataChannelInit configServo;
+    auto resultServo =
+        connection_->CreateDataChannelOrError("servo", &configServo);
+    if (!resultServo.ok()) {
+      RTC_LOG(LS_ERROR) << "CreateDataChannel() failed: "
+                        << resultServo.error().message();
+    } else {
+      RTC_LOG(LS_INFO) << "CreateDataChannel() success(servo)";
+    }
+    data_manager->OnDataChannel(resultServo.MoveValue());
   }
+#endif
 
   using RTCOfferAnswerOptions =
       webrtc::PeerConnectionInterface::RTCOfferAnswerOptions;

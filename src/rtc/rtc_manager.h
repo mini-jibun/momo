@@ -97,7 +97,8 @@ class RTCManager {
              rtc::scoped_refptr<ScalableVideoTrackSource> video_track_source,
              VideoTrackReceiver* receiver);
   ~RTCManager();
-  void AddDataManager(std::shared_ptr<RTCDataManager> data_manager);
+  void AddDataManager(std::string label,
+                      std::shared_ptr<RTCDataManager> data_manager);
   std::shared_ptr<RTCConnection> CreateConnection(
       webrtc::PeerConnectionInterface::RTCConfiguration rtc_config,
       RTCMessageSender* sender);

@@ -7,28 +7,31 @@
 
 class RTCDataManagerDispatcher : public RTCDataManager {
  public:
-  void Add(std::shared_ptr<RTCDataManager> data_manager) {
-    data_managers_.push_back(data_manager);
+  void Add(std::string label, std::shared_ptr<RTCDataManager> data_manager) {
+    data_managers_map_[label].push_back(data_manager);
   }
 
   void OnDataChannel(
       rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel) override {
-    for (std::weak_ptr<RTCDataManager> wp : data_managers_) {
+    std::string label = data_channel->label();
+    for (std::weak_ptr<RTCDataManager> wp : data_managers_map_[label]) {
       auto data_manager = wp.lock();
       if (data_manager) {
         data_manager->OnDataChannel(data_channel);
       }
     }
-    data_managers_.erase(
-        std::remove_if(data_managers_.begin(), data_managers_.end(),
+    auto data_managers = data_managers_map_[label];
+    data_managers.erase(
+        std::remove_if(data_managers.begin(), data_managers.end(),
                        [](const std::weak_ptr<RTCDataManager>& wp) {
                          return wp.expired();
                        }),
-        data_managers_.end());
+        data_managers.end());
   }
 
  private:
-  std::vector<std::weak_ptr<RTCDataManager>> data_managers_;
+  std::map<std::string, std::vector<std::weak_ptr<RTCDataManager>>>
+      data_managers_map_;
 };
 
 #endif

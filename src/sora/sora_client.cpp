@@ -400,7 +400,7 @@ std::shared_ptr<RTCConnection> SoraClient::CreateRTCConnection(
   }
 #endif
 
-  manager_->AddDataManager(dc_);
+  manager_->AddDataManager("sora", dc_);
   return manager_->CreateConnection(rtc_config, this);
 }
 

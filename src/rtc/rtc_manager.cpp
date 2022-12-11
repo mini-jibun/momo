@@ -212,8 +212,9 @@ RTCManager::~RTCManager() {
   rtc::CleanupSSL();
 }
 
-void RTCManager::AddDataManager(std::shared_ptr<RTCDataManager> data_manager) {
-  data_manager_dispatcher_.Add(data_manager);
+void RTCManager::AddDataManager(std::string label,
+                                std::shared_ptr<RTCDataManager> data_manager) {
+  data_manager_dispatcher_.Add(label, data_manager);
 }
 
 class RawCryptString : public rtc::CryptStringImpl {

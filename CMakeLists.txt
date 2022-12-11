@@ -312,8 +312,8 @@ target_sources(momo
     src/rtc/rtc_manager.cpp
     src/rtc/rtc_ssl_verifier.cpp
     src/rtc/scalable_track_source.cpp
-    src/serial_data_channel/serial_data_channel.cpp
-    src/serial_data_channel/serial_data_manager.cpp
+    src/data_channel/serial_data_channel.cpp
+    src/data_channel/serial_data_manager.cpp
     src/sora/sora_server.cpp
     src/sora/sora_session.cpp
     src/sora/sora_client.cpp
@@ -668,6 +668,17 @@ elseif (TARGET_OS STREQUAL "linux")
     endif()
 
     if (USE_SERVO)
+      target_sources(momo
+        PRIVATE
+          src/data_channel/servo_data_manager.cpp
+          src/data_channel/servo_data_channel.cpp
+      )
+
+      target_compile_definitions(momo
+        PRIVATE
+          USE_SERVO=$<BOOL:${USE_SERVO}>
+      )
+
       target_link_libraries(momo
         PRIVATE
           pigpiod_if2)

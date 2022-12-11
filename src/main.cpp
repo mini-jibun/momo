@@ -29,7 +29,11 @@
 #include "rtc/device_video_capturer.h"
 #endif
 
-#include "serial_data_channel/serial_data_manager.h"
+#include "data_channel/serial_data_manager.h"
+
+#if USE_SERVO
+#include "data_channel/servo_data_manager.h"
+#endif
 
 #if USE_SDL2
 #include "sdl_renderer/sdl_renderer.h"
@@ -235,8 +239,21 @@ int main(int argc, char* argv[]) {
       if (!data_manager) {
         return 1;
       }
-      rtc_manager->AddDataManager(data_manager);
+      rtc_manager->AddDataManager("serial", data_manager);
     }
+
+#if USE_SERVO
+    std::shared_ptr<RTCDataManager> servo_manager =
+        std::shared_ptr<RTCDataManager>(
+            ServoDataManager::Create(12, 13).release());
+
+    if (!servo_manager) {
+      return 1;
+    }
+
+    rtc_manager->AddDataManager("servo", servo_manager);
+    RTC_LOG(LS_INFO) << "ServoDataManager created";
+#endif
 
     boost::asio::signal_set signals(ioc, SIGINT, SIGTERM);
     signals.async_wait(
