@@ -1,8 +1,14 @@
 const remoteVideo = document.getElementById('remote_video');
 const dataTextInput = document.getElementById('data_text');
+const sensor0 = document.getElementById('sensor_0');
+const sensor1 = document.getElementById('sensor_1');
+const sensor2 = document.getElementById('sensor_2');
+const sensor3 = document.getElementById('sensor_3');
+
 remoteVideo.controls = true;
 let peerConnection = null;
 let dataChannel = null;
+let dataChannelServo = null;
 let candidates = [];
 let hasReceivedSdp = false;
 // iceServer を定義
@@ -120,6 +126,7 @@ function playVideo(element, stream) {
 function prepareNewConnection() {
   const peer = new RTCPeerConnection(peerConnectionConfig);
   dataChannel = peer.createDataChannel("serial");
+  dataChannelServo = peer.createDataChannel("servo");
   if ('ontrack' in peer) {
     if (isSafari()) {
       let tracks = [];
@@ -170,10 +177,64 @@ function prepareNewConnection() {
   peer.addTransceiver('video', {direction: 'recvonly'});
   peer.addTransceiver('audio', {direction: 'recvonly'});
 
+  dataChannel.onopen = function(event) {
+    const joystick = new JoyStick('joystick', {});
+    setInterval(() => {
+      if (dataChannel == null || dataChannel.readyState != "open") {
+        return;
+      }
+
+      const d = 47.5;
+      const _x = joystick.GetX();
+      const _y = joystick.GetY();
+      const slope = _y / _x;
+      const xMax = Math.sqrt(10000 / (Math.pow(slope, 2) + 1));
+      const yMax = Math.sqrt((10000 * Math.pow(slope, 2)) / (Math.pow(slope, 2) + 1));
+      const x = isNaN(xMax) ? _x : Math.sign(_x) * Math.min(Math.abs(_x), xMax);
+      const y = isNaN(yMax) ? _y : Math.sign(_y) * Math.min(Math.abs(_y), yMax);
+      const velocity = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+      const radian = Math.acos(x / velocity);
+      const degree = radian * (180 / Math.PI);
+      const dutyLeft = isNaN(radian) ? 0 : Math.sign(_y) * (velocity + d * (Math.PI / 2 - radian));
+      const dutyRight = isNaN(radian) ? 0 : Math.sign(_y) * (velocity - d * (Math.PI / 2 - radian));
+
+      const map = (value) => {
+        const in_min = -180;
+        const in_max = 180;
+        const out_min = -255;
+        const out_max = 255;
+        return Math.trunc((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+      }
+
+      dataChannel.send(new TextEncoder().encode(`${map(dutyLeft)},${map(dutyRight)}$`));
+    }, 50);
+  }
   dataChannel.onmessage = function (event) {
-    console.log("Got Data Channel Message:", new TextDecoder().decode(event.data));
+    const text = new TextDecoder().decode(event.data);
+    const sensors = text.split(',');
+    sensor0.value = sensors[0];
+    sensor1.value = sensors[1];
+    sensor2.value = sensors[2];
+    sensor3.value = sensors[3];
   };
-  
+
+  dataChannelServo.onopen = function(event) {
+    const joystick = new JoyStick('joystick_servo', {});
+    setInterval(() => {
+      if (dataChannelServo == null || dataChannelServo.readyState != "open") {
+        return;
+      }
+      const map = (value) => {
+        const in_min = -100;
+        const in_max = 100;
+        const out_min = 0;
+        const out_max = 180;
+        return Math.trunc((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+      }    
+      dataChannelServo.send(new TextEncoder().encode(`${map(joystick.GetX())},${map(joystick.GetY())}`));
+    }, 50);
+  }
+
   return peer;
 }
 

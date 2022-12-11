@@ -18,11 +18,22 @@
       <input type="button" onclick="disconnect();" value="Disconnect">
       <input type="button" onclick="play();" value="Play">
       <input type="text" id="data_text">
+      sensor0:
+      <input type="text" id="sensor_0">
+      sensor1:
+      <input type="text" id="sensor_1">
+      sensor2:
+      <input type="text" id="sensor_2">
+      sensor3:
+      <input type="text" id="sensor_3">
       <input type="button" onclick="sendDataChannel();" value="Send">
+      <div id="joystick" style="width:200px;height:200px;margin-bottom:20px;"></div>
+      <div id="joystick_servo" style="width:200px;height:200px;margin-bottom:20px;"></div>
     </div>
     <div>
       <video id="remote_video" autoplay style="border: 3px solid gray;"></video>
     </div>
+    <script type='text/javascript' src='https://bobboteck.github.io/joy/joy.js'></script>
     <script type='text/javascript' src='./webrtc.js'></script>
   </body>
 </html>
