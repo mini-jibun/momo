@@ -84,12 +84,16 @@ void ServoDataManager::SetDegree(const uint8_t* data, size_t length) {
   }
 
   int x = std::stoi(tokens[0]);
+  x = std::max(DEGREE_X_LIMIT_MIN, std::min(DEGREE_X_LIMIT_MAX, x));
   int y = std::stoi(tokens[1]);
+  y = std::max(DEGREE_Y_LIMIT_MIN, std::min(DEGREE_Y_LIMIT_MAX, y));
 
   if (x < 0 || x > 180 || y < 0 || y > 180) {
     RTC_LOG(LS_ERROR) << "Invalid degree: " << message.c_str();
     return;
   }
+
+  RTC_LOG(LS_VERBOSE) << "Set degree: " << x << ", " << y;
 
   set_PWM_dutycycle(pi_, pin_x_, ToDutyCycle(x));
   set_PWM_dutycycle(pi_, pin_y_, ToDutyCycle(y));
