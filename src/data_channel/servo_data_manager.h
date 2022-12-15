@@ -23,8 +23,8 @@ class ServoDataManager : public RTCDataManager {
   static constexpr unsigned PULSE_MAX = 2500;
 
   static constexpr int DEGREE_MIN = 0;
-  static ocnstexpr int DEGREE_MID = DEGREE_MAX / 2;
   static constexpr int DEGREE_MAX = 180;
+  static constexpr int DEGREE_MID = DEGREE_MAX / 2;
 
   static constexpr int DEGREE_X_LIMIT_MIN = 20;
   static constexpr int DEGREE_X_LIMIT_MAX = 180;
