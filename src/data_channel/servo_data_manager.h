@@ -44,10 +44,10 @@ class ServoDataManager : public RTCDataManager {
   }
 
  public:
-  static std::unique_ptr<ServoDataManager> Create(unsigned pin_x,
-                                                  unsigned pin_y) {
+  static std::unique_ptr<ServoDataManager> Create(unsigned pin_roll,
+                                                  unsigned pin_pitch) {
     std::unique_ptr<ServoDataManager> data_manager(
-        new ServoDataManager(pin_x, pin_y));
+        new ServoDataManager(pin_roll, pin_pitch));
     if (!data_manager->Initilize()) {
       return nullptr;
     }
@@ -64,7 +64,7 @@ class ServoDataManager : public RTCDataManager {
   std::string label() { return "servo"; }
 
  private:
-  ServoDataManager(unsigned pin_x, unsigned pin_y);
+  ServoDataManager(unsigned pin_roll, unsigned pin_pitch);
   bool Initilize();
   void DoCloseServo();
 
@@ -72,8 +72,8 @@ class ServoDataManager : public RTCDataManager {
   std::vector<ServoDataChannel*> servo_data_channels_;
 
   int pi_;
-  unsigned pin_x_;
-  unsigned pin_y_;
+  unsigned pin_roll_;
+  unsigned pin_pitch_;
 };
 
 #endif

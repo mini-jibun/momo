@@ -11,8 +11,8 @@
 // Boost
 #include <boost/algorithm/string.hpp>
 
-ServoDataManager::ServoDataManager(unsigned pin_x, unsigned pin_y)
-    : pi_(-1), pin_x_(pin_x), pin_y_(pin_y) {}
+ServoDataManager::ServoDataManager(unsigned pin_roll, unsigned pin_pitch)
+    : pi_(-1), pin_roll_(pin_roll), pin_pitch_(pin_pitch) {}
 
 ServoDataManager::~ServoDataManager() {
   {
@@ -47,26 +47,26 @@ bool ServoDataManager::Initilize() {
     return false;
   }
 
-  if (set_mode(pi_, pin_x_, PI_OUTPUT) < 0 ||
-      set_mode(pi_, pin_y_, PI_OUTPUT) < 0) {
+  if (set_mode(pi_, pin_roll_, PI_OUTPUT) < 0 ||
+      set_mode(pi_, pin_pitch_, PI_OUTPUT) < 0) {
     RTC_LOG(LS_ERROR) << "pigpio set_mode failed";
     return false;
   }
 
-  if (set_PWM_frequency(pi_, pin_x_, FREQUENCY) < 0 ||
-      set_PWM_frequency(pi_, pin_y_, FREQUENCY) < 0) {
+  if (set_PWM_frequency(pi_, pin_roll_, FREQUENCY) < 0 ||
+      set_PWM_frequency(pi_, pin_pitch_, FREQUENCY) < 0) {
     RTC_LOG(LS_ERROR) << "pigpio set_PWM_frequency failed";
     return false;
   }
 
-  if (set_PWM_range(pi_, pin_x_, RANGE) < 0 ||
-      set_PWM_range(pi_, pin_y_, RANGE) < 0) {
+  if (set_PWM_range(pi_, pin_roll_, RANGE) < 0 ||
+      set_PWM_range(pi_, pin_pitch_, RANGE) < 0) {
     RTC_LOG(LS_ERROR) << "pigpio set_PWM_range failed";
     return false;
   }
 
-  set_PWM_dutycycle(pi_, pin_x_, ToDutyCycle(90));
-  set_PWM_dutycycle(pi_, pin_y_, ToDutyCycle(90));
+  set_PWM_dutycycle(pi_, pin_roll_, ToDutyCycle(90));
+  set_PWM_dutycycle(pi_, pin_pitch_, ToDutyCycle(90));
 
   return true;
 }
@@ -83,20 +83,20 @@ void ServoDataManager::SetDegree(const uint8_t* data, size_t length) {
     return;
   }
 
-  int x = std::stoi(tokens[0]);
-  x = std::max(DEGREE_X_LIMIT_MIN, std::min(DEGREE_X_LIMIT_MAX, x));
-  int y = std::stoi(tokens[1]);
-  y = std::max(DEGREE_Y_LIMIT_MIN, std::min(DEGREE_Y_LIMIT_MAX, y));
+  int roll = std::stoi(tokens[0]);
+  roll = std::max(DEGREE_X_LIMIT_MIN, std::min(DEGREE_X_LIMIT_MAX, roll));
+  int pitch = std::stoi(tokens[1]);
+  pitch = std::max(DEGREE_Y_LIMIT_MIN, std::min(DEGREE_Y_LIMIT_MAX, pitch));
 
-  if (x < 0 || x > 180 || y < 0 || y > 180) {
+  if (roll < 0 || roll > 180 || pitch < 0 || pitch > 180) {
     RTC_LOG(LS_ERROR) << "Invalid degree: " << message.c_str();
     return;
   }
 
-  RTC_LOG(LS_VERBOSE) << "Set degree: " << x << ", " << y;
+  RTC_LOG(LS_VERBOSE) << "Set degree: " << roll << ", " << pitch;
 
-  set_PWM_dutycycle(pi_, pin_x_, ToDutyCycle(x));
-  set_PWM_dutycycle(pi_, pin_y_, ToDutyCycle(y));
+  set_PWM_dutycycle(pi_, pin_roll_, ToDutyCycle(roll));
+  set_PWM_dutycycle(pi_, pin_pitch_, ToDutyCycle(pitch));
 }
 
 void ServoDataManager::DoCloseServo() {
